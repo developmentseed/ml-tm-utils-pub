@@ -1,0 +1,5 @@
+pygeotile>=1.0.6
+Sqlalchemy~=1.2.12
+rasterio~=1.0.18
+pyproj~=1.9.6
+pygeotile
