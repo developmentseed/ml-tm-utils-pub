@@ -243,3 +243,36 @@ def cog_windowed_read(image_path, tile_ind, chan_inds=(1,), final_proj=None):
             return np.moveaxis(window_data_proj, 0, -1)
 
         return np.moveaxis(window_data, 0, -1)
+
+
+def get_pixel_area(latitude, zoom):
+    """Calculate the area per pixel in a tile for a given latitude and zoom.
+
+    Parameters
+    ----------
+    latitude: float
+        Latitude in degrees. Should be on interval [-90, 90]
+    zoom: int
+        OSM zoom level. Should be on interval [0, 19]
+
+    Returns
+    ----------
+    area: float
+        Area per pixel in square meters
+
+    Notes: equation from:
+        https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Resolution_and_Scale
+    """
+
+    # Error checking
+    if latitude < -90 or latitude > 90:
+        raise ValueError('latitude of {} outside bounds of [-90, 90]'.format(latitude))
+    if not isinstance(zoom, int):
+        raise ValueError('zoom must be an `int`, got {}'.format(type(zoom)))
+    if zoom < 0 or zoom > 19:
+        raise ValueError('zoom of {} outside bounds of [0, 19]'.format(zoom))
+
+    pix_width = 156543.03 * np.cos(np.deg2rad(latitude)) / (2 ** zoom)
+
+    # Return area of pixel
+    return pix_width ** 2
